@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2020.12.21)  29 DEC 2020 21:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2020.12.21)  29 DEC 2020 23:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -588,11 +588,23 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout3 = `report.toc'.
 
  [2] [3] [4]
+Overfull \hbox (32.2146pt too wide) in paragraph at lines 84--85
+\T2A/cmr/m/n/12 про-грам-мы, ис-ход-ный код ко-то-рых мож-но най-ти ре-по-зи-то
+-рии \T2A/cmr/m/it/12 https://github.com/zvonand/dis_systems\T2A/cmr/m/n/12 .
+ []
+
+
+Overfull \hbox (24.77904pt too wide) in paragraph at lines 84--85
+\T2A/cmr/m/n/12 Кро-ме то-го, фай-лы с ис-ход-ны-ми тек-ста-ми про-грамм при-кр
+еп-ле-ны в тре-ке-ре на сай-те \T2A/cmr/m/it/12 dvmh.keldysh.ru\T2A/cmr/m/n/12 
+. 
+ []
+
 [5] (./report.aux) ) 
 Here is how much of TeX's memory you used:
  4542 strings out of 480906
  58748 string characters out of 5910771
- 324314 words of memory out of 5000000
+ 325314 words of memory out of 5000000
  20066 multiletter control sequences out of 15000+600000
  547981 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -609,7 +621,7 @@ xmf/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf/fonts/type1/publ
 ic/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200
 .pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm2074.pfb></usr/share/tex
 mf/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on report.pdf (5 pages, 173814 bytes).
+Output written on report.pdf (5 pages, 191115 bytes).
 PDF statistics:
  76 PDF objects out of 1000 (max. 8388607)
  53 compressed objects within 1 object stream

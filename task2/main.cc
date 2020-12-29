@@ -18,41 +18,36 @@
 
 using namespace std;
 
-#define TOKILL 10
+#define TOKILL 7
 
 int currRank, nWorkingProcs, nProcs;
 string filename;
-unsigned proc_failure = 0;
 MPI_Comm main_comm;
 
 const double precision = 0.00001;
 int size;
 
-static void err_handler(MPI_Comm* pcomm, int* perr, ...) {
-    MPI_Comm comm= *pcomm;
+
+static void err_handler(MPI_Comm *pcomm, int *perr, ...) {
     int err = *perr;
     char errstr[MPI_MAX_ERROR_STRING];
-    int i, rank, size, nf, len, eclass;
-    MPI_Group group_c, group_f;
-    int *ranks_gc, *ranks_gf;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &size);
-    MPIX_Comm_failure_ack(comm);
-    MPIX_Comm_failure_get_acked(comm, &group_f);
+    int nf, len;
+    MPI_Group group_f;
+
+    MPI_Comm_size(main_comm, &nProcs);
+    MPIX_Comm_failure_ack(main_comm);
+    MPIX_Comm_failure_get_acked(main_comm, &group_f);
     MPI_Group_size(group_f, &nf);
     MPI_Error_string(err, errstr, &len);
-    //printf("Rank %d / %d: Notified of error %s. %d found dead: { ",rank, size, errstr, nf);
-    ranks_gf= (int*)malloc(nf* sizeof(int));
-    ranks_gc= (int*)malloc(nf* sizeof(int));
-    MPI_Comm_group(comm, &group_c);
-    for(i= 0; i< nf; i++)ranks_gf[i] = i;
-    MPI_Group_translate_ranks(group_f, nf, ranks_gf,group_c, ranks_gc);
-    MPI_Comm_rank(comm, &rank);
-    //for(i= 0; i< nf; i++)printf("%d ", ranks_gc[i]);
-    //printf("}\n");
-    free(ranks_gf); free(ranks_gc);
-}
 
+    #ifdef log
+    printf("\n %d. Error happened: %s, %d found dead\n", currRank, nProcs, errstr, nf);
+    #endif
+
+    MPIX_Comm_shrink(main_comm, &main_comm); // Shrink the communicator
+    MPI_Comm_rank(main_comm, &currRank);
+    filename = "chp/" + to_string(currRank) + ".bp";
+}
 
 
 
@@ -127,9 +122,11 @@ int toTrapezeMPI (double* matrix, int currRank, int nWorkingProcs) {
     #endif
 
     // "demo"-killing one of the processes (something like this may occur anywhere, but we fail one of them here)
+    MPI_Barrier(main_comm);
     if (currRank == TOKILL) {
         raise(SIGKILL);
     }
+    MPI_Barrier(main_comm);
 
     int stripHeight = (!currRank) ? (size/nWorkingProcs + size%nWorkingProcs) : (size/nWorkingProcs);
     double* strip = new double[size * stripHeight];
@@ -141,15 +138,6 @@ int toTrapezeMPI (double* matrix, int currRank, int nWorkingProcs) {
         }
     } else if (currRank < nWorkingProcs) {
         MPI_Recv (strip, stripHeight*size, MPI_DOUBLE, 0, 0, main_comm, MPI_STATUS_IGNORE);
-
-        #ifdef log
-        for (int i = 0; i < stripHeight; ++i) {
-            for (int j = 0; j < size; ++j) {
-                cout << strip [i*size + j] << " ";
-            }
-            cout << endl;
-        }
-        #endif
     }
     write_backup(strip, size * stripHeight, filename);
 
@@ -195,7 +183,6 @@ int toTrapezeMPI (double* matrix, int currRank, int nWorkingProcs) {
         #ifdef log
         cerr << "memcpy finished, allreduce started" << currRank << endl;
         #endif
-
 
         MPI_Allreduce (candidates_tmp, candidates, size * nWorkingProcs, MPI_DOUBLE, MPI_SUM, main_comm);
         MPI_Allreduce (maxValues_tmp, maxValues, nWorkingProcs, MPI_DOUBLE, MPI_SUM, main_comm);
@@ -287,8 +274,8 @@ int main (int argc, char *argv[]) {
 
     // Error handler setup
     MPI_Comm_create_errhandler(err_handler, &errh);
-    MPI_Comm_set_errhandler(MPI_COMM_WORLD, errh);
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Comm_set_errhandler(main_comm, errh);
+    MPI_Barrier(main_comm);
 
     // backup filename
     filename = "chp/" + to_string(currRank) + ".bp";
