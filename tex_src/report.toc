@@ -1,0 +1,7 @@
+\babel@toc {russian}{}
+\contentsline {section}{\numberline {1.\relax }Постановка задач}{3}%
+\contentsline {subsection}{\numberline {1.1.\relax }Задача 1: моделирование}{3}%
+\contentsline {subsection}{\numberline {1.2.\relax }Задача 2: надёжность}{3}%
+\contentsline {section}{\numberline {2.\relax }Пояснения к решениям}{4}%
+\contentsline {subsection}{\numberline {2.1.\relax }Моделирование}{4}%
+\contentsline {subsection}{\numberline {2.2.\relax }Надёжность}{4}%

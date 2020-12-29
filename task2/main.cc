@@ -28,35 +28,6 @@ MPI_Comm main_comm;
 const double precision = 0.00001;
 int size;
 
-
-// static void err_handler(MPI_Comm *pcomm, int *perr, ...) {
-//     proc_failure = 1;
-//     int err = *perr;
-//     char errstr[MPI_MAX_ERROR_STRING];
-//     int size, nf, len;
-//     int *ranks_gc, *ranks_gf;
-//     MPI_Group group_f, group_c;
-//
-//     MPI_Comm_size(main_comm, &size);
-//     MPIX_Comm_failure_ack(main_comm);
-//     MPIX_Comm_failure_get_acked(main_comm, &group_f);
-//     MPI_Group_size(group_f, &nf);
-//     MPI_Error_string(err, errstr, &len);
-//     printf("\nRank %d / %d failed: %s. %d process(es) found dead\n", currRank, size, errstr, nf);
-//
-//     // shrink to a new comm w/o dead process
-//     MPIX_Comm_shrink(main_comm, &main_comm);
-//     ranks_gf= (int*)malloc(nf* sizeof(int));
-//     ranks_gc= (int*)malloc(nf* sizeof(int));
-//     MPI_Comm_group(main_comm, &group_c);
-//     for(int i= 0; i< nf; i++)ranks_gf[i] = i;
-//     MPI_Group_translate_ranks(group_f, nf, ranks_gf,group_c, ranks_gc);
-//     MPI_Comm_rank(main_comm, &currRank);
-//     filename = "chp/" + to_string(currRank) + ".bp";
-//     free(ranks_gf); free(ranks_gc);
-// }
-
-
 static void err_handler(MPI_Comm* pcomm, int* perr, ...) {
     MPI_Comm comm= *pcomm;
     int err = *perr;
@@ -76,6 +47,7 @@ static void err_handler(MPI_Comm* pcomm, int* perr, ...) {
     MPI_Comm_group(comm, &group_c);
     for(i= 0; i< nf; i++)ranks_gf[i] = i;
     MPI_Group_translate_ranks(group_f, nf, ranks_gf,group_c, ranks_gc);
+    MPI_Comm_rank(comm, &rank);
     //for(i= 0; i< nf; i++)printf("%d ", ranks_gc[i]);
     //printf("}\n");
     free(ranks_gf); free(ranks_gc);
